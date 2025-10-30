@@ -14,10 +14,11 @@
 
     min-width: 500px;
     padding-right: 2rem;
+    padding-left: 2rem;
 }
 
 .app__gallery-content button {
-    margin-top: 1rem;
+    margin-top: 2rem;
 }
 
 .app__gallery-images {
@@ -26,6 +27,7 @@
     flex-direction: row;
     max-width: 50%;
     position: relative;
+    
 }
 
 .app__gallery-images_container {
@@ -77,12 +79,13 @@
 .app__gallery-images_arrows {
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: 0 1rem;
-    position: absolute;
-    bottom: 5%;
+    gap: 1.2rem; /* space between arrows */
+    margin-top: 15%; /* move arrows below */
+    position: relative; /* not absolute anymore */
 }
+
 
 .gallery__arrow-icon {
     color: var(--color-golden);

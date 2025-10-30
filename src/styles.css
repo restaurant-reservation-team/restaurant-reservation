@@ -1,0 +1,182 @@
+:root {
+  --primary: #DCCA87;
+  --secondary: #ffffff;
+  --light: #fafafd;
+  --dark: #0c0c0c;
+  --test: #3c2e02ac;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  background-color: var(--test);
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
+    sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  margin: 0;
+  padding: 0;
+  color: var(--dark);
+}
+
+.app__bg {
+  width: 100%;
+  background-color: var(--light);
+}
+
+
+
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin: 1rem 0 2rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  color: #bfae5e;
+  transform: translateX(-3px);
+}
+
+/* ==============================
+   MENU CONTAINER
+============================== */
+.menu {
+  max-width: 80%;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: var(--secondary);
+  border-radius: 1rem;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* ==============================
+   LOGO
+============================== */
+.logo {
+  width: 280px;
+  margin: 0 auto 2rem;
+  display: block;
+}
+
+/* ==============================
+   SECTION HEADINGS
+============================== */
+.mains h2,
+.extras-heading {
+  font-size: 1.75rem;
+  color: var(--primary);
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ==============================
+   MENU ITEMS (mobile-first)
+   - Stack: name, price (right aligned), then description
+============================== */
+.menu-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px dashed #ddd;
+  padding-bottom: 1rem;
+}
+
+/* Name and extras name */
+.mains-name,
+.extras-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin: 0; /* ensure no default margins interfere */
+}
+
+/* Price (mobile: aligned to end under name) */
+.menu-item strong {
+  font-size: 1.1rem;
+  color: var(--primary);
+  align-self: flex-end;
+  margin: 0;
+}
+
+/* Description under name */
+.mains-description {
+  color: #666;
+  font-size: 0.95rem;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* ==============================
+   TOTAL SECTION
+============================== */
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 2px solid var(--primary);
+  padding-top: 1rem;
+  font-weight: bold;
+  color: var(--dark);
+}
+
+.total-price {
+  font-size: 1.5rem;
+  color: var(--primary);
+}
+
+/* ==============================
+   LARGER SCREENS: use grid per .menu-item
+   Layout:
+     "name  price"
+     "desc  desc"
+   This keeps price fixed on the right and description full width below.
+============================== */
+@media (min-width: 768px) {
+  .menu-item {
+    display: grid;
+    grid-template-columns: 1fr auto; /* name / price */
+    grid-template-rows: auto auto;   /* row 1: name+price, row2: description */
+    grid-template-areas:
+      "name price"
+      "desc desc";
+    gap: 0.35rem 1rem; /* row-gap, column-gap */
+    align-items: start;
+  }
+
+  .mains-name,
+  .extras-name {
+    grid-area: name;
+    align-self: center;
+  }
+
+  .menu-item strong {
+    grid-area: price;
+    justify-self: end; /* push to far right of its column */
+    align-self: center;
+    margin: 0;
+  }
+
+  .mains-description {
+    grid-area: desc;
+    margin-top: 0.25rem;
+  }
+}

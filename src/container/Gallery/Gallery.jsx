@@ -26,7 +26,7 @@ const Gallery = () => {
   return (
     <div className='app__gallery flex__center'>
       <div className='app__gallery-content'>
-        <SubHeading title="Instagram" />
+        <SubHeading title="Kakav ba instagram ?" />
         <h1 className='headtext__cormorant'>Photo Gallery</h1>
         <p className='p__opensans' style={{ color: "#AAA", marginTop: "2rem" }}>AA AAA AAA AAAA AAA AAA AAA AAAA AAA AAAA AAA AAAAA AA A AA A AA AA A AA</p>
         <button type='button' className='custom__button'>View More</button>
@@ -37,7 +37,7 @@ const Gallery = () => {
         {galleryImages.map((image, index) => (
           <div className='app__gallery-images_card flex__center' key={'gallery_image-${index+1}'}>
           <img src={image} alt="gallery" />
-          <BsInstagram className='gallery__image-icon' />
+          
           </div>
 
         ))}
