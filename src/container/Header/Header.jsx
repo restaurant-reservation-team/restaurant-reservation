@@ -10,7 +10,7 @@ const Header = () => (
       <SubHeading title="Minimum najjaci kafic u gradu"/>
       <h1 className='app__header-h1'>The Key to Fine Dining</h1>
       <p className='p__opensans' style={{margin: '2rem 0'}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis pharetra adipiscing ultrices vulputate posuere tristique. In sed odio nec aliquet eu proin mauris et.</p>
-      <button type='button' className='custom__button'>Explore Menu</button>
+      <button type='button' className='custom__button'><a href='#menu'>Explore Menu</a></button>
     </div>
 
 
