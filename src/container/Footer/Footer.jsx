@@ -12,9 +12,9 @@ const Footer = () => (
     <div className='app__footer-links'>
       <div className='app__footer-links_contact'>
         <h1 className='app__footer-headtext'> CONTACT US</h1>
-        <p className='p__opensans'>9 3 53 sarajevo bih</p>
-        <p className='p__opensans'>12345</p>
-        <p className='p__opensans'>12345</p>
+        <p className='p__opensans'>71000 BiH</p>
+        <p className='p__opensans'>+12345</p>
+        <p className='p__opensans'>+12345</p>
       </div>
 
       <div className='app__footer-links_logo'>
@@ -28,7 +28,7 @@ const Footer = () => (
         <FiInstagram />
       </div>
       <div className='app__footer-links_work'>
-        <h1 className='app__footer-headtext'> WOrking HOURS</h1>
+        <h1 className='app__footer-headtext'> Working Hours</h1>
         <p className='p__opensans'>Monday - Petak: 10.00 - 02.00</p>
         <p className='p__opensans'>Saturday - Sunday: 10.00 - 02.00</p>
         <p className='p__opensans'>+387 123 45 67 8910</p>
