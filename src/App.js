@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 
-import { AboutUs, FindUs, Footer, Gallery, Header, Intro, SpecialMenu } from './container';
+import { AboutUs, FindUs, Footer, Gallery, Header, Intro, SpecialMenu, Gallery2 } from './container';
 import { Navbar } from './components';
 import './App.css';
 
@@ -60,6 +60,7 @@ const AppContent = () => {
               <Header />
               <AboutUs />
               <SpecialMenu />
+              <Gallery2 />
               <Intro />
               <Gallery />
               <FindUs />

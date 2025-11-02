@@ -28,7 +28,7 @@ const Gallery = () => {
       <div className='app__gallery-content'>
         <SubHeading title="Kakav ba instagram ?" />
         <h1 className='headtext__cormorant'>Photo Gallery</h1>
-        <p className='p__opensans' style={{ color: "#AAA", marginTop: "2rem" }}>AA AAA AAA AAAA AAA AAA AAA AAAA AAA AAAA AAA AAAAA AA A AA A AA AA A AA</p>
+        <p className='p__opensans' style={{ color: "#AAA", marginTop: "2rem" }}>Take a look inside our kitchen and dining space. From sizzling plates to smiling faces, every photo captures the warmth and flavor of what we do best.</p>
         <button type='button' className='custom__button'>View More</button>
       </div>
 

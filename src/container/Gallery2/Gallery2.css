@@ -9,28 +9,16 @@
   padding: 2rem;
 }
 
-
-/* .flex__center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-} */
-
-
+/* .flex__center { display: flex; justify-content: center; align-items: center; } */
 .app__gallery2-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-
   gap: 3rem;
   padding: 2rem;
-
 }
 
-/* .app__gallery-content {
-  text-align: center;  
-} */
-
+/* .app__gallery-content { text-align: center; } */
 .app__gallery-content h1 {
   margin-top: 0.5rem;
 }
@@ -111,23 +99,19 @@
   width: 120px;
   /* adjust size as you want */
   height: 50px;
-
   display: flex;
   /* ✅ add this */
   justify-content: center;
   /* ✅ center text horizontally */
   align-items: center;
   /* ✅ center text vertically */
-
   font-size: 16px;
   /* ✅ make text bigger */
   font-weight: 600;
   /* ✅ optional bold text */
-
   cursor: pointer;
   /* this WILL work now */
   z-index: 5;
-
 }
 
 .app__gallery-events {
