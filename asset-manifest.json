@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/restaurant-reservation/static/css/main.3b74de2c.css",
-    "main.js": "/restaurant-reservation/static/js/main.ac9de9d9.js",
+    "main.js": "/restaurant-reservation/static/js/main.4154a0f2.js",
     "static/media/meal.mp4": "/restaurant-reservation/static/media/meal.a1b6c6dc67dfa2f99343.mp4",
     "static/media/bg.png": "/restaurant-reservation/static/media/bg.3d421b1b5682e1b67deb.png",
     "static/media/welcome.png": "/restaurant-reservation/static/media/welcome.d724eb984456d9c97470.png",
@@ -27,12 +27,12 @@
     "static/media/sign.png": "/restaurant-reservation/static/media/sign.9bf0bd90ad4caa17991f.png",
     "static/media/crni2.jpg": "/restaurant-reservation/static/media/crni2.739985a3e8a665b494c1.jpg",
     "index.html": "/restaurant-reservation/index.html",
-    "static/media/spoon.svg": "/restaurant-reservation/static/media/spoon.d079f43fbcf509908d3865293080795a.svg",
+    "static/media/spoon.svg": "/restaurant-reservation/static/media/spoon.b5681c867bb867d794693513d048401f.svg",
     "main.3b74de2c.css.map": "/restaurant-reservation/static/css/main.3b74de2c.css.map",
-    "main.ac9de9d9.js.map": "/restaurant-reservation/static/js/main.ac9de9d9.js.map"
+    "main.4154a0f2.js.map": "/restaurant-reservation/static/js/main.4154a0f2.js.map"
   },
   "entrypoints": [
     "static/css/main.3b74de2c.css",
-    "static/js/main.ac9de9d9.js"
+    "static/js/main.4154a0f2.js"
   ]
 }
