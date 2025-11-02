@@ -1,0 +1,38 @@
+{
+  "files": {
+    "main.css": "/restaurant-reservation/static/css/main.3b74de2c.css",
+    "main.js": "/restaurant-reservation/static/js/main.ac9de9d9.js",
+    "static/media/meal.mp4": "/restaurant-reservation/static/media/meal.a1b6c6dc67dfa2f99343.mp4",
+    "static/media/bg.png": "/restaurant-reservation/static/media/bg.3d421b1b5682e1b67deb.png",
+    "static/media/welcome.png": "/restaurant-reservation/static/media/welcome.d724eb984456d9c97470.png",
+    "static/media/laurels.png": "/restaurant-reservation/static/media/laurels.e760828692795d4aafd7.png",
+    "static/media/menu.png": "/restaurant-reservation/static/media/menu.a8287c67809afebcc280.png",
+    "static/media/gallery03.png": "/restaurant-reservation/static/media/gallery03.38f6703c653b9ac00027.png",
+    "static/media/gallery04.png": "/restaurant-reservation/static/media/gallery04.9995b28e22b13f3ed4f1.png",
+    "static/media/sajfer1.jpg": "/restaurant-reservation/static/media/sajfer1.e04c5d59c2d00bab9b2b.jpg",
+    "static/media/knife.png": "/restaurant-reservation/static/media/knife.1121c0a5afb62acb31cb.png",
+    "static/media/overlaybg.png": "/restaurant-reservation/static/media/overlaybg.165362eea72d1614ae28.png",
+    "static/media/findus.png": "/restaurant-reservation/static/media/findus.43c6c43fd3e80d931f11.png",
+    "static/media/voyage1.jpg": "/restaurant-reservation/static/media/voyage1.45f6fd080155d9ae2d17.jpg",
+    "static/media/gallery01.png": "/restaurant-reservation/static/media/gallery01.8f77a2c082408395091a.png",
+    "static/media/voyage2.jpg": "/restaurant-reservation/static/media/voyage2.c69c91df943359eea655.jpg",
+    "static/media/gallery02.png": "/restaurant-reservation/static/media/gallery02.05aec43ab2f70e97b2f5.png",
+    "static/media/voyageCover.jpg": "/restaurant-reservation/static/media/voyageCover.68b8229db8b47c424602.jpg",
+    "static/media/crniCerakCover.jpg": "/restaurant-reservation/static/media/crniCerakCover.1cf2ed00a5958ee6946d.jpg",
+    "static/media/gericht.png": "/restaurant-reservation/static/media/gericht.a941b2e768e70ed43d37.png",
+    "static/media/sajfer2.jpg": "/restaurant-reservation/static/media/sajfer2.e8632892fa7337cb1c71.jpg",
+    "static/media/crni1.jpg": "/restaurant-reservation/static/media/crni1.9f9b7a9f999714aea5c0.jpg",
+    "static/media/sajferCover.jpg": "/restaurant-reservation/static/media/sajferCover.5e70612a209f04c06a12.jpg",
+    "static/media/logo.png": "/restaurant-reservation/static/media/logo.0286194c03de0a90dac9.png",
+    "static/media/sign.png": "/restaurant-reservation/static/media/sign.9bf0bd90ad4caa17991f.png",
+    "static/media/crni2.jpg": "/restaurant-reservation/static/media/crni2.739985a3e8a665b494c1.jpg",
+    "index.html": "/restaurant-reservation/index.html",
+    "static/media/spoon.svg": "/restaurant-reservation/static/media/spoon.d079f43fbcf509908d3865293080795a.svg",
+    "main.3b74de2c.css.map": "/restaurant-reservation/static/css/main.3b74de2c.css.map",
+    "main.ac9de9d9.js.map": "/restaurant-reservation/static/js/main.ac9de9d9.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3b74de2c.css",
+    "static/js/main.ac9de9d9.js"
+  ]
+}
