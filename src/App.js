@@ -60,7 +60,7 @@ const AppContent = () => {
               <Header />
               <AboutUs />
               <SpecialMenu />
-              <Gallery2 />
+              {/* <Gallery2 /> */}
               <Intro />
               <Gallery />
               <FindUs />
