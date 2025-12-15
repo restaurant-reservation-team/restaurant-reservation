@@ -1,0 +1,202 @@
+.app__login {
+  width: 100%;
+  background-color: #0b0b0b; /* same dark as hero */
+  color: #ffffff;
+}
+
+.app__login-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 4rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* LEFT SIDE TEXT  */
+.app__login-side {
+  flex: 1;
+}
+
+.app__login-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #dcca87; /* gold accent like on hero */
+  margin-bottom: 1rem;
+}
+
+.app__login-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px;
+  line-height: 1.1;
+  color: #dcca87;
+  margin-bottom: 1.5rem;
+}
+
+.app__login-text {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  color: #aaaaaa;
+  max-width: 420px;
+}
+
+/* CARD  */
+.app__login-card {
+  flex: 1;
+  background-color: #111111;
+  border-radius: 12px;
+  padding: 2.5rem 2.75rem;
+  border: 1px solid #3a3a3a;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65);
+}
+
+/* TABS  */
+.app__login-tabs {
+  display: flex;
+  border-bottom: 1px solid #333333;
+  margin-bottom: 2rem;
+}
+
+.app__login-tab {
+  flex: 1;
+  padding: 0.75rem 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #888888;
+  position: relative;
+}
+
+.app__login-tab.active {
+  color: #dcca87;
+}
+
+.app__login-tab.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 2px;
+  background-color: #dcca87;
+}
+
+/* FORM  */
+.app__login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.app__login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.app__login-field label {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #cccccc;
+}
+
+.app__login-field input {
+  background-color: #151515;
+  border-radius: 8px;
+  border: 1px solid #333333;
+  padding: 0.75rem 0.9rem;
+  color: #ffffff;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.app__login-field input::placeholder {
+  color: #666666;
+}
+
+.app__login-field input:focus {
+  border-color: #dcca87;
+  box-shadow: 0 0 0 1px rgba(220, 202, 135, 0.35);
+}
+
+/* REMEMBER / FORGOT ROW */
+.app__login-footerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+.app__login-remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 13px;
+  color: #aaaaaa;
+}
+
+.app__login-remember input {
+  accent-color: #dcca87;
+}
+
+.app__login-link {
+  background: none;
+  border: none;
+  color: #dcca87;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* SUBMIT BUTTON */
+.app__login-submit {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* If .custom__button already exists, we keep its style; otherwise: */
+.custom__button.app__login-submit {
+  background-color: #dcca87;
+  color: #0b0b0b;
+  border-radius: 999px;
+  border: none;
+  padding: 0.85rem 0;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.custom__button.app__login-submit:hover {
+  filter: brightness(1.05);
+}
+
+/* Small hint text */
+.app__login-hint {
+  margin-top: 0.5rem;
+  font-size: 11px;
+  color: #777777;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .app__login-wrapper {
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .app__login-card {
+    width: 100%;
+  }
+
+  .app__login-title {
+    font-size: 40px;
+  }
+}
