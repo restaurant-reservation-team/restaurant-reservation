@@ -16,6 +16,7 @@ import Total from "./menuTemplate/Total";
 import { Provider } from "./Context";
 import menuData from "./data.json";
 import "./styles.css";
+import TablePlanPage from "./components/TablePlan/TablePlanPage.jsx";
 
 import { FiArrowLeft } from "react-icons/fi";
 
@@ -79,7 +80,8 @@ const AppContent = () => {
             </>
           }
         />
-
+        {/*Route for booking */}
+        <Route path="/table-plan" element={<TablePlanPage />} />
         {/* 🔹 NEW LOGIN ROUTE */}
         <Route path="/login" element={<Login />} />
 

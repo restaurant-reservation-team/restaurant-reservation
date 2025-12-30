@@ -40,7 +40,7 @@ const Navbar = () => {
         </Link>
         <div />
         {/* Ako želiš da Book Table otvara /menu, možeš: <Link to="/menu">Book Table</Link> */}
-        <Link to="/" className='p__opensans'>
+        <Link to="/table-plan" className='p__opensans'>
           Book Table
         </Link>
       </div>
