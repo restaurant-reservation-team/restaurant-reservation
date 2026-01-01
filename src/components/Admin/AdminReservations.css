@@ -1,0 +1,112 @@
+.admPage {
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  padding: 3rem 1.25rem;
+  display: flex;
+  justify-content: center;
+  color: #fff;
+}
+
+.admShell {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.admHeader {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.admHeader h2 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 52px;
+  line-height: 1.1;
+  color: #dcca87;
+  margin: 0 0 0.65rem 0;
+}
+
+.admHeader p {
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  color: #aaaaaa;
+  margin: 0 0 14px 0;
+}
+
+.admRefresh {
+  border-radius: 999px;
+  background: #dcca87;
+  color: #0b0b0b;
+  border: none;
+  padding: 10px 14px;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.admRefresh:disabled {
+  background: #222;
+  color: #777;
+  cursor: not-allowed;
+}
+
+.admCard {
+  background: #111111;
+  border: 1px solid #3a3a3a;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65);
+  overflow-x: auto;
+}
+
+.admEmpty {
+  padding: 16px;
+  color: #aaaaaa;
+  font-family: "Open Sans", sans-serif;
+  text-align: center;
+}
+
+.admTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+}
+
+.admTable th,
+.admTable td {
+  border-bottom: 1px solid #2d2d2d;
+  padding: 10px 10px;
+  vertical-align: top;
+}
+
+.admTable th {
+  color: #dcca87;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+}
+
+.admNote {
+  max-width: 320px;
+  color: #cccccc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admDelete {
+  border-radius: 999px;
+  background: rgba(239, 68, 68, 0.16);
+  border: 1px solid rgba(239, 68, 68, 0.55);
+  color: #ef4444;
+  padding: 8px 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.admDelete:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
