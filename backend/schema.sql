@@ -1,5 +1,6 @@
 USE restaurant_reservation;
 
+-- USERS
 CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(100) NOT NULL UNIQUE,
@@ -7,18 +8,53 @@ CREATE TABLE IF NOT EXISTS users (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS reservations (
+
+-- TABLES (NEW)
+CREATE TABLE IF NOT EXISTS tables (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(120) NOT NULL,
-  email VARCHAR(160) NOT NULL,
-  phone VARCHAR(50),
-  people INT NOT NULL,
-  date DATE NOT NULL,
-  time TIME NOT NULL,
-  message TEXT,
+  name VARCHAR(100) NOT NULL,
+  seats INT NOT NULL,
+  zone VARCHAR(50) DEFAULT NULL,
+
+  shape ENUM('rect','circle') NOT NULL DEFAULT 'rect',
+  x INT NOT NULL DEFAULT 0,
+  y INT NOT NULL DEFAULT 0,
+  w INT DEFAULT 90,
+  h INT DEFAULT 70,
+  r INT DEFAULT 36,
+
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- RESERVATIONS
+CREATE TABLE IF NOT EXISTS reservations (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+
+  table_id INT NOT NULL,
+  name VARCHAR(120) NOT NULL,
+  email VARCHAR(160) NOT NULL,
+  phone VARCHAR(50),
+
+  people INT NOT NULL,
+  date DATE NOT NULL,
+  time TIME NOT NULL,
+
+  duration_minutes INT NOT NULL DEFAULT 90,
+  status ENUM('confirmed','cancelled') NOT NULL DEFAULT 'confirmed',
+
+  message TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  CONSTRAINT fk_res_table
+    FOREIGN KEY (table_id) REFERENCES tables(id)
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE
+);
+
+CREATE INDEX idx_res_date_time ON reservations(date, time);
+CREATE INDEX idx_res_table_date ON reservations(table_id, date);
+
+-- GALLERY
 CREATE TABLE IF NOT EXISTS gallery_images (
   id INT AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(200),

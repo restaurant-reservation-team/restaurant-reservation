@@ -1,79 +1,265 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import "./TablePlan.css";
 
-const TABLES = [
-  { id: "T1", name: "Table 1", seats: 2, zone: "Window", shape: "rect", x: 60, y: 90, w: 90, h: 70, status: "available" },
-  { id: "T2", name: "Table 2", seats: 2, zone: "Window", shape: "circle", x: 170, y: 95, r: 34, status: "available" },
-  { id: "T3", name: "Table 3", seats: 4, zone: "Window", shape: "rect", x: 250, y: 85, w: 110, h: 75, status: "reserved" },
-
-  { id: "T4", name: "Table 4", seats: 4, zone: "Center", shape: "circle", x: 170, y: 210, r: 40, status: "available" },
-  { id: "T5", name: "Table 5", seats: 4, zone: "Center", shape: "rect", x: 280, y: 200, w: 110, h: 75, status: "available" },
-  { id: "T6", name: "Table 6", seats: 6, zone: "Center", shape: "rect", x: 420, y: 185, w: 130, h: 85, status: "reserved" },
-
-  { id: "T7", name: "Table 7", seats: 2, zone: "Bar", shape: "circle", x: 440, y: 110, r: 32, status: "available" },
-  { id: "T8", name: "Table 8", seats: 2, zone: "Bar", shape: "circle", x: 520, y: 110, r: 32, status: "available" },
-  { id: "T9", name: "Table 9", seats: 4, zone: "Bar", shape: "rect", x: 600, y: 165, w: 120, h: 75, status: "available" },
-
-  { id: "T10", name: "Table 10", seats: 6, zone: "VIP", shape: "rect", x: 590, y: 280, w: 150, h: 90, status: "available" },
-  { id: "T11", name: "Table 11", seats: 6, zone: "Bar", shape: "circle", x: 770, y: 290, r: 40, status: "reserved" },
-
-  { id: "T12", name: "Table 12", seats: 8, zone: "Family", shape: "rect", x: 80, y: 330, w: 160, h: 95, status: "available" },
-  { id: "T13", name: "Table 13", seats: 4, zone: "Family", shape: "circle", x: 280, y: 350, r: 42, status: "available" },
-
-  { id: "T14", name: "Table 14", seats: 2, zone: "Entrance", shape: "circle", x: 430, y: 320, r: 34, status: "available" },
-  { id: "T15", name: "Table 15", seats: 4, zone: "Entrance", shape: "rect", x: 560, y: 390, w: 115, h: 75, status: "blocked" },
-];
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function TablePlanPage() {
-  const [selectedId, setSelectedId] = useState(null); // store id (stable)
+  const [tables, setTables] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
   const [popupPos, setPopupPos] = useState({ x: 0, y: 0 });
-  const [reservedIds, setReservedIds] = useState(() => new Set()); // frontend-only
 
-  const tables = useMemo(() => {
-    return TABLES.map((t) => ({
+  const [date, setDate] = useState(""); // "YYYY-MM-DD"
+  const [time, setTime] = useState("");
+  const [reservedIds, setReservedIds] = useState(() => new Set());
+
+  // kept (even if you don’t show them now)
+  const [people] = useState(2);
+  const [duration] = useState(90);
+
+  const [availableTimes, setAvailableTimes] = useState([]);
+
+  /* ---------------- FETCH TABLES ---------------- */
+  useEffect(() => {
+    fetch("/api/tables")
+      .then((r) => r.json())
+      .then((data) => setTables(Array.isArray(data) ? data : []))
+      .catch(console.error);
+  }, []);
+
+  /* ---------------- FETCH AVAILABLE TIMES ---------------- */
+  useEffect(() => {
+    if (!date) {
+      setAvailableTimes([]);
+      setTime("");
+      return;
+    }
+
+    fetch(
+      `/api/available-times?date=${encodeURIComponent(date)}&people=${people}&duration=${duration}`
+    )
+      .then((r) => r.json())
+      .then((data) => {
+        setAvailableTimes(Array.isArray(data.availableTimes) ? data.availableTimes : []);
+        setTime("");
+      })
+      .catch(console.error);
+  }, [date, people, duration]);
+
+  /* ---------------- FETCH RESERVED TABLES FOR EXACT TIME ---------------- */
+  useEffect(() => {
+    if (!date || !time) {
+      setReservedIds(new Set());
+      return;
+    }
+
+    fetch(`/api/availability?date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`)
+      .then((r) => r.json())
+      .then((data) => setReservedIds(new Set(data.reservedTableIds || [])))
+      .catch(console.error);
+  }, [date, time]);
+
+  /* ---------------- MERGE STATUS ---------------- */
+  const tablesWithStatus = useMemo(() => {
+    return tables.map((t) => ({
       ...t,
-      status: reservedIds.has(t.id) ? "reserved" : t.status,
+      status: reservedIds.has(t.id) ? "reserved" : "available",
     }));
-  }, [reservedIds]);
+  }, [tables, reservedIds]);
 
   const selected = useMemo(
-    () => tables.find((t) => t.id === selectedId) ?? null,
-    [tables, selectedId]
+    () => tablesWithStatus.find((t) => t.id === selectedId) ?? null,
+    [tablesWithStatus, selectedId]
   );
 
-  function handleReserve(table) {
-    if (!table || table.status !== "available") return;
+  /* ---------------- RESERVE ---------------- */
+  async function handleReserve(table) {
+    if (!table) return;
 
-    setReservedIds((prev) => {
-      const next = new Set(prev);
-      next.add(table.id);
-      return next;
+    if (!date || !time) {
+      alert("Please select date and time first");
+      return;
+    }
+
+    if (table.status !== "available") return;
+
+    const res = await fetch("/api/reservations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tableId: table.id,
+        name: "Guest",
+        email: "guest@test.com",
+        people: table.seats,
+        date,
+        time,
+        message: "",
+      }),
     });
 
-    setSelectedId(null); // close popup
-    alert(`Reserved ${table.name} ✅ (frontend only)`);
+    const payload = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      alert(payload.error || "Reservation failed");
+      return;
+    }
+
+    alert(`Reserved ${table.name}`);
+    setSelectedId(null);
+
+    // refresh availability
+    fetch(`/api/availability?date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`)
+      .then((r) => r.json())
+      .then((data) => setReservedIds(new Set(data.reservedTableIds || [])))
+      .catch(console.error);
   }
 
   function openPopupForTable(e, table) {
     e.stopPropagation();
+    const floor = e.currentTarget.closest(".tp-floor")?.getBoundingClientRect();
+    if (!floor) return;
 
-    const floorEl = e.currentTarget.closest(".tp-floor");
-    if (!floorEl) return;
-
-    const floorRect = floorEl.getBoundingClientRect();
-    setPopupPos({ x: e.clientX - floorRect.left, y: e.clientY - floorRect.top });
+    setPopupPos({ x: e.clientX - floor.left, y: e.clientY - floor.top });
     setSelectedId(table.id);
   }
 
   return (
-    <div className="tp-page">
+    <div className="tp-page app__bg">
       <div className="tp-shell">
+        {/* HEADER */}
         <div className="tp-header">
           <h2>Choose your table</h2>
-          <p>Click a table to see details and reserve.</p>
+          <p>Select date & time, then choose a table.</p>
         </div>
 
-        {/* Legend (CSS will style it) */}
+        {/* DATE + TIME CARD (this is what was missing / ugly) */}
+        <div
+          className="tp-pickerCard"
+          style={{
+            maxWidth: 980,
+            margin: "0 auto 16px",
+            background: "#111111",
+            border: "1px solid #3a3a3a",
+            borderRadius: 12,
+            padding: "16px 18px",
+            boxShadow: "0 18px 45px rgba(0, 0, 0, 0.65)",
+          }}
+        >
+          {/* DATE */}
+          <div style={{ display: "grid", gap: 10 }}>
+            <div style={{ fontFamily: "Open Sans, sans-serif", color: "#cccccc", fontSize: 13, letterSpacing: "0.10em", textTransform: "uppercase" }}>
+              Date
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                background: "#151515",
+                border: "1px solid #333333",
+                borderRadius: 10,
+                padding: "0.75rem 0.9rem",
+              }}
+            >
+              <span style={{ color: "#dcca87" }}>📅</span>
+
+              <DatePicker
+                selected={date ? new Date(date) : null}
+                onChange={(d) => {
+                  if (!d) return;
+                  setDate(toYMD(d));
+                  setTime("");
+                }}
+                dateFormat="dd.MM.yyyy"
+                placeholderText="Select date"
+                minDate={new Date()}
+                withPortal
+                className="tpDateInput"
+              />
+            </div>
+          </div>
+
+          {/* TIME */}
+          <div style={{ height: 14 }} />
+
+          <div
+            style={{
+              fontFamily: "Open Sans, sans-serif",
+              color: "#cccccc",
+              fontSize: 13,
+              letterSpacing: "0.10em",
+              textTransform: "uppercase",
+              marginBottom: 10,
+            }}
+          >
+            Time
+          </div>
+
+          {!date ? (
+            <div
+              style={{
+                background: "#151515",
+                border: "1px dashed #333333",
+                borderRadius: 10,
+                padding: "0.85rem 0.95rem",
+                color: "#aaaaaa",
+                fontFamily: "Open Sans, sans-serif",
+              }}
+            >
+              Select a date to see available times.
+            </div>
+          ) : availableTimes.length === 0 ? (
+            <div
+              style={{
+                background: "#151515",
+                border: "1px solid #333333",
+                borderRadius: 10,
+                padding: "0.85rem 0.95rem",
+                color: "#aaaaaa",
+                fontFamily: "Open Sans, sans-serif",
+              }}
+            >
+              No times available for this date.
+            </div>
+          ) : (
+            <div
+              className="tp-slotsGrid"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(92px, 1fr))",
+                gap: 10,
+              }}
+            >
+              {availableTimes.map((t) => {
+                const isSelected = time === t;
+                return (
+                  <button
+                    key={t}
+                    type="button"
+                    className={`tp-slotBtn ${isSelected ? "is-selected" : ""}`}
+                    onClick={() => setTime(t)}
+                    style={{
+                      background: isSelected ? "#dcca87" : "#151515",
+                      color: isSelected ? "#0b0b0b" : "#cccccc",
+                      border: `1px solid ${isSelected ? "#dcca87" : "#333333"}`,
+                      borderRadius: 999,
+                      padding: "0.7rem 0.9rem",
+                      fontWeight: 700,
+                      fontSize: 13,
+                      cursor: "pointer",
+                      transition: "transform 120ms ease, border-color 200ms ease",
+                    }}
+                  >
+                    {t}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* LEGEND */}
         <div className="tp-legend">
           <div className="tp-leg-item">
             <span className="tp-dot available" /> Available
@@ -81,15 +267,12 @@ export default function TablePlanPage() {
           <div className="tp-leg-item">
             <span className="tp-dot reserved" /> Reserved
           </div>
-          <div className="tp-leg-item">
-            <span className="tp-dot blocked" /> Blocked
-          </div>
         </div>
 
+        {/* FLOOR */}
         <div className="tp-floorWrap">
-          {/* click outside closes */}
           <div className="tp-floor" onClick={() => setSelectedId(null)}>
-            {/* Walls / areas */}
+            {/* AREAS */}
             <div className="tp-wall tp-wall-top" />
             <div className="tp-wall tp-wall-left" />
             <div className="tp-wall tp-wall-right" />
@@ -99,33 +282,20 @@ export default function TablePlanPage() {
             <div className="tp-area tp-kitchen">KITCHEN</div>
             <div className="tp-area tp-entrance">ENTRANCE</div>
 
-            {tables.map((t) => (
+            {tablesWithStatus.map((t) => (
               <div
                 key={t.id}
                 className={`tp-table tp-${t.shape} tp-${t.status}`}
                 style={tableStyle(t)}
                 onClick={(e) => openPopupForTable(e, t)}
                 tabIndex={0}
-                role="button"
-                aria-label={`${t.name}, seats ${t.seats}, ${t.status}`}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    // open near the table if keyboard
-                    setPopupPos({ x: t.x + 12, y: t.y + 12 });
-                    setSelectedId(t.id);
-                  }
-                }}
               >
                 {t.id}
               </div>
             ))}
 
             {selected && (
-              <div
-                className="tp-card"
-                style={cardStyle(popupPos)}
-                onClick={(e) => e.stopPropagation()}
-              >
+              <div className="tp-card" style={cardStyle(popupPos)} onClick={(e) => e.stopPropagation()}>
                 <div className="tp-card-top">
                   <div>
                     <div className="tp-card-title">{selected.name}</div>
@@ -133,22 +303,17 @@ export default function TablePlanPage() {
                       Seats: {selected.seats} • Zone: {selected.zone}
                     </div>
                   </div>
-
                   <button className="tp-close" onClick={() => setSelectedId(null)}>
                     ✕
                   </button>
                 </div>
 
                 <div className="tp-card-bottom">
-                  <span className={`tp-pill ${selected.status}`}>
-                    {selected.status}
-                  </span>
-
+                  <span className={`tp-pill ${selected.status}`}>{selected.status}</span>
                   <button
                     className="tp-btn"
-                    onClick={() => handleReserve(selected)}
                     disabled={selected.status !== "available"}
-                    title={selected.status !== "available" ? "This table is not available" : "Reserve this table"}
+                    onClick={() => handleReserve(selected)}
                   >
                     {selected.status === "available" ? "Reserve" : "Not available"}
                   </button>
@@ -162,35 +327,47 @@ export default function TablePlanPage() {
   );
 }
 
+/* ---------------- HELPERS ---------------- */
+
+function toPx(v, fallback) {
+  if (v === null || v === undefined || v === "") return `${fallback}px`;
+  const n = Number(v);
+  if (!Number.isNaN(n)) return `${n}px`;
+  return `${fallback}px`;
+}
+
 function tableStyle(t) {
   if (t.shape === "circle") {
+    const r = t.r ?? 36;
     return {
-      left: t.x,
-      top: t.y,
-      width: (t.r ?? 36) * 2,
-      height: (t.r ?? 36) * 2,
+      left: toPx(t.x, 0),
+      top: toPx(t.y, 0),
+      width: toPx(r * 2, 72),
+      height: toPx(r * 2, 72),
     };
   }
+
   return {
-    left: t.x,
-    top: t.y,
-    width: t.w ?? 90,
-    height: t.h ?? 70,
+    left: toPx(t.x, 0),
+    top: toPx(t.y, 0),
+    width: toPx(t.w ?? 90, 90),
+    height: toPx(t.h ?? 70, 70),
   };
 }
 
 function cardStyle(pos) {
-  const floorW = 900;
-  const floorH = 520;
-
   const cardW = 290;
   const cardH = 150;
 
-  const maxX = floorW - cardW - 10;
-  const maxY = floorH - cardH - 10;
-
   return {
-    left: Math.max(10, Math.min(pos.x + 14, maxX)),
-    top: Math.max(10, Math.min(pos.y + 14, maxY)),
+    left: Math.max(10, Math.min(pos.x + 14, 900 - cardW - 10)),
+    top: Math.max(10, Math.min(pos.y + 14, 520 - cardH - 10)),
   };
+}
+
+function toYMD(d) {
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
 }
