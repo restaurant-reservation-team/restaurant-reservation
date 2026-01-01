@@ -35,10 +35,10 @@ const Navbar = () => {
       </ul>
 
       <div className='app__navbar-login'>
-        <Link to="/login" className='p__opensans'>
+        {/* <Link to="/login" className='p__opensans'>
           Log In / Registration
-        </Link>
-        <div />
+        </Link> */}
+      
         {/* Ako želiš da Book Table otvara /menu, možeš: <Link to="/menu">Book Table</Link> */}
         <Link to="/table-plan" className='p__opensans'>
           Book Table

@@ -1,12 +1,6 @@
 USE restaurant_reservation;
 
--- USERS
-CREATE TABLE IF NOT EXISTS users (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  username VARCHAR(100) NOT NULL UNIQUE,
-  password_hash VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+
 
 
 -- TABLES (NEW)
@@ -26,14 +20,13 @@ CREATE TABLE IF NOT EXISTS tables (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- RESERVATIONS
+-- RESERVATIONS (FINAL, NO LOGIN)
 CREATE TABLE IF NOT EXISTS reservations (
   id INT AUTO_INCREMENT PRIMARY KEY,
 
   table_id INT NOT NULL,
   name VARCHAR(120) NOT NULL,
-  email VARCHAR(160) NOT NULL,
-  phone VARCHAR(50),
+  phone VARCHAR(50) NOT NULL,
 
   people INT NOT NULL,
   date DATE NOT NULL,
@@ -48,8 +41,12 @@ CREATE TABLE IF NOT EXISTS reservations (
   CONSTRAINT fk_res_table
     FOREIGN KEY (table_id) REFERENCES tables(id)
     ON DELETE RESTRICT
-    ON UPDATE CASCADE
+    ON UPDATE CASCADE,
+
+  CONSTRAINT chk_people_positive CHECK (people > 0),
+  CONSTRAINT chk_duration_positive CHECK (duration_minutes > 0)
 );
+
 
 CREATE INDEX idx_res_date_time ON reservations(date, time);
 CREATE INDEX idx_res_table_date ON reservations(table_id, date);

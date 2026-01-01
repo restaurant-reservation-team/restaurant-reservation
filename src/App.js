@@ -82,6 +82,7 @@ const AppContent = () => {
         />
         {/*Route for booking */}
         <Route path="/table-plan" element={<TablePlanPage />} />
+
         {/* 🔹 NEW LOGIN ROUTE */}
         <Route path="/login" element={<Login />} />
 
