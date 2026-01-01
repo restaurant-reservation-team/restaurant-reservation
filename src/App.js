@@ -17,6 +17,8 @@ import { Provider } from "./Context";
 import menuData from "./data.json";
 import "./styles.css";
 import TablePlanPage from "./components/TablePlan/TablePlanPage.jsx";
+import AdminReservations from "./components/Admin/AdminReservations";
+
 
 import { FiArrowLeft } from "react-icons/fi";
 
@@ -87,6 +89,8 @@ const AppContent = () => {
         <Route path="/login" element={<Login />} />
 
         <Route path="/menu" element={<MenuPage />} />
+        <Route path="/admin" element={<AdminReservations />} />
+
       </Routes>
     </>
   );

@@ -166,7 +166,7 @@ app.get("/api/reservations", async (req, res) => {
              t.seats AS table_seats,
              t.zone  AS table_zone
       FROM reservations r
-      JOIN tables t ON t.id = r.table_id
+      LEFT JOIN tables t ON t.id = r.table_id
       ORDER BY r.created_at DESC
     `);
     res.json(rows);
@@ -237,6 +237,27 @@ app.post("/api/reservations", async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+
+/* ---------------- DELETE RESERVATION ----------------
+   DELETE /api/reservations/:id
+*/
+app.delete("/api/reservations/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id) return res.status(400).json({ error: "Invalid id" });
+
+  try {
+    const [result] = await db.query("DELETE FROM reservations WHERE id = ?", [id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Reservation not found" });
+    }
+
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
