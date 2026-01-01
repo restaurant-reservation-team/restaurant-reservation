@@ -19,11 +19,26 @@ export default function TablePlanPage() {
 
   const [availableTimes, setAvailableTimes] = useState([]);
 
+  // NEW: customer info
+  const [custName, setCustName] = useState("");
+  const [custPhone, setCustPhone] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [note, setNote] = useState("");
+
   /* ---------------- FETCH TABLES ---------------- */
   useEffect(() => {
     fetch("/api/tables")
       .then((r) => r.json())
-      .then((data) => setTables(Array.isArray(data) ? data : []))
+      .then((data) => {
+        const arr = Array.isArray(data) ? data : [];
+        setTables(
+          arr.map((t) => ({
+            ...t,
+            id: normalizeTableId(t.id),
+          }))
+        );
+      })
+
       .catch(console.error);
   }, []);
 
@@ -36,11 +51,15 @@ export default function TablePlanPage() {
     }
 
     fetch(
-      `/api/available-times?date=${encodeURIComponent(date)}&people=${people}&duration=${duration}`
+      `/api/available-times?date=${encodeURIComponent(
+        date
+      )}&people=${people}&duration=${duration}`
     )
       .then((r) => r.json())
       .then((data) => {
-        setAvailableTimes(Array.isArray(data.availableTimes) ? data.availableTimes : []);
+        setAvailableTimes(
+          Array.isArray(data.availableTimes) ? data.availableTimes : []
+        );
         setTime("");
       })
       .catch(console.error);
@@ -53,7 +72,11 @@ export default function TablePlanPage() {
       return;
     }
 
-    fetch(`/api/availability?date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`)
+    fetch(
+      `/api/availability?date=${encodeURIComponent(
+        date
+      )}&time=${encodeURIComponent(time)}`
+    )
       .then((r) => r.json())
       .then((data) => setReservedIds(new Set(data.reservedTableIds || [])))
       .catch(console.error);
@@ -83,32 +106,53 @@ export default function TablePlanPage() {
 
     if (table.status !== "available") return;
 
+    const name = custName.trim();
+    const phone = custPhone.trim();
+    
+
+    if (!name || !phone) {
+      alert("Please enter your name and phone number.");
+      return;
+    }
+
+    setSubmitting(true);
+
     const res = await fetch("/api/reservations", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        tableId: table.id,
-        name: "Guest",
-        email: "guest@test.com",
-        people: table.seats,
+        tableId: normalizeTableId(table.id),
+        name,
+        phone,
+        people, // party size (kept as 2 for now)
         date,
         time,
-        message: "",
+        duration,
+        message: note.trim() || null,
       }),
     });
 
     const payload = await res.json().catch(() => ({}));
+    setSubmitting(false);
 
     if (!res.ok) {
       alert(payload.error || "Reservation failed");
       return;
     }
 
-    alert(`Reserved ${table.name}`);
+    alert(`Reserved ${table.name} ✅`);
     setSelectedId(null);
+    setCustName("");
+    setCustPhone("");
+    setNote("");
+
 
     // refresh availability
-    fetch(`/api/availability?date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`)
+    fetch(
+      `/api/availability?date=${encodeURIComponent(
+        date
+      )}&time=${encodeURIComponent(time)}`
+    )
       .then((r) => r.json())
       .then((data) => setReservedIds(new Set(data.reservedTableIds || [])))
       .catch(console.error);
@@ -116,7 +160,9 @@ export default function TablePlanPage() {
 
   function openPopupForTable(e, table) {
     e.stopPropagation();
-    const floor = e.currentTarget.closest(".tp-floor")?.getBoundingClientRect();
+    const floor = e.currentTarget
+      .closest(".tp-floor")
+      ?.getBoundingClientRect();
     if (!floor) return;
 
     setPopupPos({ x: e.clientX - floor.left, y: e.clientY - floor.top });
@@ -132,7 +178,7 @@ export default function TablePlanPage() {
           <p>Select date & time, then choose a table.</p>
         </div>
 
-        {/* DATE + TIME CARD (this is what was missing / ugly) */}
+        {/* DATE + TIME CARD */}
         <div
           className="tp-pickerCard"
           style={{
@@ -147,7 +193,15 @@ export default function TablePlanPage() {
         >
           {/* DATE */}
           <div style={{ display: "grid", gap: 10 }}>
-            <div style={{ fontFamily: "Open Sans, sans-serif", color: "#cccccc", fontSize: 13, letterSpacing: "0.10em", textTransform: "uppercase" }}>
+            <div
+              style={{
+                fontFamily: "Open Sans, sans-serif",
+                color: "#cccccc",
+                fontSize: 13,
+                letterSpacing: "0.10em",
+                textTransform: "uppercase",
+              }}
+            >
               Date
             </div>
 
@@ -295,7 +349,11 @@ export default function TablePlanPage() {
             ))}
 
             {selected && (
-              <div className="tp-card" style={cardStyle(popupPos)} onClick={(e) => e.stopPropagation()}>
+              <div
+                className="tp-card"
+                style={cardStyle(popupPos)}
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div className="tp-card-top">
                   <div>
                     <div className="tp-card-title">{selected.name}</div>
@@ -303,19 +361,51 @@ export default function TablePlanPage() {
                       Seats: {selected.seats} • Zone: {selected.zone}
                     </div>
                   </div>
-                  <button className="tp-close" onClick={() => setSelectedId(null)}>
+                  <button
+                    className="tp-close"
+                    onClick={() => setSelectedId(null)}
+                  >
                     ✕
                   </button>
                 </div>
 
+                {/* NEW: form fields */}
+                <div style={{ marginTop: 10, display: "grid", gap: 10 }}>
+                  <input
+                    value={custName}
+                    onChange={(e) => setCustName(e.target.value)}
+                    placeholder="Your name"
+                    className="tpInput"
+                  />
+                  <input
+                    value={custPhone}
+                    onChange={(e) => setCustPhone(e.target.value)}
+                    placeholder="Phone number"
+                    className="tpInput"
+                  />
+                  <textarea
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    placeholder="Note (optional) – e.g. near window, birthday, no smoking..."
+                    className="tpInput tpTextarea"
+                  />
+
+                </div>
+
                 <div className="tp-card-bottom">
-                  <span className={`tp-pill ${selected.status}`}>{selected.status}</span>
+                  <span className={`tp-pill ${selected.status}`}>
+                    {selected.status}
+                  </span>
                   <button
                     className="tp-btn"
-                    disabled={selected.status !== "available"}
+                    disabled={selected.status !== "available" || submitting}
                     onClick={() => handleReserve(selected)}
                   >
-                    {selected.status === "available" ? "Reserve" : "Not available"}
+                    {submitting
+                      ? "Saving..."
+                      : selected.status === "available"
+                        ? "Reserve"
+                        : "Not available"}
                   </button>
                 </div>
               </div>
@@ -357,7 +447,7 @@ function tableStyle(t) {
 
 function cardStyle(pos) {
   const cardW = 290;
-  const cardH = 150;
+  const cardH = 210; // slightly taller now (inputs)
 
   return {
     left: Math.max(10, Math.min(pos.x + 14, 900 - cardW - 10)),
@@ -370,4 +460,12 @@ function toYMD(d) {
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const dd = String(d.getDate()).padStart(2, "0");
   return `${yyyy}-${mm}-${dd}`;
+}
+
+function normalizeTableId(id) {
+  // handles 1, "1", "T1", "t12"
+  const s = String(id).trim();
+  const numeric = s.replace(/^t/i, ""); // remove leading T/t
+  const n = parseInt(numeric, 10);
+  return Number.isNaN(n) ? id : n;
 }

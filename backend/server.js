@@ -22,7 +22,7 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-/* ---------------- TABLES (TablePlan) ---------------- */
+/* ---------------- TABLES ---------------- */
 app.get("/api/tables", async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM tables ORDER BY id ASC");
@@ -54,7 +54,7 @@ function generateSlots(openHHMM, closeHHMM, stepMin, durationMin) {
   return slots;
 }
 
-/* ---------------- AVAILABLE TIMES (Option 2) ----------------
+/* ---------------- AVAILABLE TIMES ----------------
    GET /api/available-times?date=YYYY-MM-DD&people=2&duration=90
 */
 app.get("/api/available-times", async (req, res) => {
@@ -121,19 +121,16 @@ app.get("/api/available-times", async (req, res) => {
   }
 });
 
-/* ---------------- AVAILABILITY FOR TABLEPLAN ----------------
-   GET /api/availability?date=YYYY-MM-DD&time=HH:MM&duration=90
-   Returns which tables are RESERVED for that time window (overlap)
+/* ---------------- AVAILABILITY ----------------
+   GET /api/availability?date=YYYY-MM-DD&time=HH:MM
+   Returns reserved table IDs for that date (optionally exact time)
 */
 app.get("/api/availability", async (req, res) => {
   const { date, time } = req.query;
 
-  if (!date) {
-    return res.status(400).json({ error: "Missing date" });
-  }
+  if (!date) return res.status(400).json({ error: "Missing date" });
 
   try {
-    // If time is provided -> reserved tables at that exact time
     if (time) {
       const [rows] = await db.query(
         `SELECT DISTINCT table_id
@@ -146,7 +143,6 @@ app.get("/api/availability", async (req, res) => {
       return res.json({ reservedTableIds: rows.map((r) => r.table_id) });
     }
 
-    // If time is NOT provided -> reserved tables for the whole day
     const [rows] = await db.query(
       `SELECT DISTINCT table_id
        FROM reservations
@@ -161,13 +157,18 @@ app.get("/api/availability", async (req, res) => {
   }
 });
 
-
-/* ---------------- RESERVATIONS ---------------- */
+/* ---------------- RESERVATIONS (ADMIN LIST) ---------------- */
 app.get("/api/reservations", async (req, res) => {
   try {
-    const [rows] = await db.query(
-      "SELECT * FROM reservations ORDER BY created_at DESC"
-    );
+    const [rows] = await db.query(`
+      SELECT r.*,
+             t.name AS table_name,
+             t.seats AS table_seats,
+             t.zone  AS table_zone
+      FROM reservations r
+      JOIN tables t ON t.id = r.table_id
+      ORDER BY r.created_at DESC
+    `);
     res.json(rows);
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -176,12 +177,14 @@ app.get("/api/reservations", async (req, res) => {
 
 /* ---------------- CREATE RESERVATION (SAFE) ----------------
    Re-checks overlap before insert (prevents double-booking).
+   Customer provides: name + phone (+ others)
 */
 app.post("/api/reservations", async (req, res) => {
-  const { tableId, name, email, phone, people, date, time, duration, message } =
+  const { tableId, name, phone, people, date, time, duration, message } =
     req.body;
 
-  if (!tableId || !name || !email || !people || !date || !time) {
+  // phone is REQUIRED now
+  if (!tableId || !name || !phone || !people || !date || !time) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
@@ -209,19 +212,18 @@ app.post("/api/reservations", async (req, res) => {
         .json({ error: "Table is not available for this time window" });
     }
 
-    // 2) insert
+    // 2) insert (NO EMAIL)
     const [result] = await db.query(
       `
       INSERT INTO reservations
-        (table_id, name, email, phone, people, date, time, duration_minutes, status, message)
+        (table_id, name, phone, people, date, time, duration_minutes, status, message)
       VALUES
-        (?, ?, ?, ?, ?, ?, ?, ?, 'confirmed', ?)
+        (?, ?, ?, ?, ?, ?, ?, 'confirmed', ?)
       `,
       [
         tableId,
         name,
-        email,
-        phone || null,
+        phone,
         people,
         date,
         time,

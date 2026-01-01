@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
-import './Login.css';
+import React, { useState } from "react";
+import "./Login.css";
 
 const Login = () => {
-  const [mode, setMode] = useState('login'); // "login" or "register"
+  const [mode, setMode] = useState("login"); // "login" or "register"
+
+  // form state
+  const [fullName, setFullName] = useState(""); // only for register (optional)
+  const [username, setUsername] = useState(""); // your backend uses username
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
 
   return (
     <section className="app__login section__padding" id="login">
@@ -21,16 +27,16 @@ const Login = () => {
         <div className="app__login-card">
           <div className="app__login-tabs">
             <button
-              className={`app__login-tab ${mode === 'login' ? 'active' : ''}`}
+              className={`app__login-tab ${mode === "login" ? "active" : ""}`}
               type="button"
-              onClick={() => setMode('login')}
+              onClick={() => setMode("login")}
             >
               Log In
             </button>
             <button
-              className={`app__login-tab ${mode === 'register' ? 'active' : ''}`}
+              className={`app__login-tab ${mode === "register" ? "active" : ""}`}
               type="button"
-              onClick={() => setMode('register')}
+              onClick={() => setMode("register")}
             >
               Registration
             </button>
@@ -40,35 +46,59 @@ const Login = () => {
             className="app__login-form"
             onSubmit={(e) => {
               e.preventDefault();
-              // later connect to backend / context
-              console.log(`${mode} form submitted`);
+              console.log("SUBMIT", { mode, fullName, username, password, confirm });
             }}
           >
-            {mode === 'register' && (
+            {mode === "register" && (
               <div className="app__login-field">
                 <label htmlFor="name">Full Name</label>
-                <input id="name" type="text" placeholder="Your name" />
+                <input
+                  id="name"
+                  type="text"
+                  placeholder="Your name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                />
               </div>
             )}
 
+            {/* IMPORTANT: backend uses username, not email */}
             <div className="app__login-field">
-              <label htmlFor="email">Email address</label>
-              <input id="email" type="email" placeholder="you@example.com" />
+              <label htmlFor="username">Username</label>
+              <input
+                id="username"
+                type="text"
+                placeholder="amar_test"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
             </div>
 
             <div className="app__login-field">
               <label htmlFor="password">Password</label>
-              <input id="password" type="password" placeholder="••••••••" />
+              <input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
 
-            {mode === 'register' && (
+            {mode === "register" && (
               <div className="app__login-field">
                 <label htmlFor="confirm">Confirm password</label>
-                <input id="confirm" type="password" placeholder="Repeat password" />
+                <input
+                  id="confirm"
+                  type="password"
+                  placeholder="Repeat password"
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                />
               </div>
             )}
 
-            {mode === 'login' && (
+            {mode === "login" && (
               <div className="app__login-footerRow">
                 <label className="app__login-remember">
                   <input type="checkbox" />
@@ -81,10 +111,8 @@ const Login = () => {
             )}
 
             <button type="submit" className="custom__button app__login-submit">
-              {mode === 'login' ? 'Log In' : 'Create Account'}
+              {mode === "login" ? "Log In" : "Create Account"}
             </button>
-
-            
           </form>
         </div>
       </div>
