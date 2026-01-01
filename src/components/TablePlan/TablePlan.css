@@ -1,53 +1,65 @@
-/* TablePlan.css */
-
 /* =========================
-   Page layout (centered)
+   TABLE PLAN (clean + same theme as login)
+   One definition per class (no duplicates)
    ========================= */
+
+/* Page */
 .tp-page {
+  width: 100%;
   min-height: calc(100vh - 80px);
-  padding: 32px 20px;
+  color: #ffffff;
+  padding: 3rem 1.25rem;
   display: flex;
   justify-content: center;
 }
 
 .tp-shell {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1200px;
+}
+
+/* Header */
+.tp-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
 .tp-header h2 {
-  margin: 0 0 6px 0;
-  font-size: 34px;
-  letter-spacing: 0.2px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 52px;
+  line-height: 1.1;
+  color: #dcca87;
+  margin: 0 0 0.65rem 0;
 }
 
 .tp-header p {
-  margin: 0 0 18px 0;
-  opacity: 0.85;
-  font-size: 15px;
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  color: #aaaaaa;
+  margin: 0;
 }
 
-/* =========================
-   Legend
-   ========================= */
+/* Legend */
 .tp-legend {
   display: flex;
+  justify-content: center;
   gap: 14px;
   flex-wrap: wrap;
-  margin-bottom: 14px;
+  margin: 18px 0 14px;
 }
 
 .tp-leg-item {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-weight: 800;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
   font-size: 13px;
-  padding: 8px 10px;
+  padding: 8px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-  opacity: 0.95;
+  border: 1px solid #333333;
+  background: #111111;
+  color: #cccccc;
 }
 
 .tp-dot {
@@ -56,122 +68,71 @@
   border-radius: 999px;
   display: inline-block;
 }
-.tp-dot.available {
-  background: rgba(34, 197, 94, 0.95);
-}
-.tp-dot.reserved {
-  background: rgba(239, 68, 68, 0.95);
-}
-.tp-dot.blocked {
-  background: rgba(245, 158, 11, 0.95);
-}
+.tp-dot.available { background: #dcca87; }
+.tp-dot.reserved { background: #666666; }
+.tp-dot.blocked  { background: #f59e0b; }
 
-/* =========================
-   Floor wrapper (nice card)
-   ========================= */
+/* Floor wrapper (THIS is the container you said you can't see) */
 .tp-floorWrap {
-  width: fit-content;
-  padding: 18px;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.18);
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
 }
 
-/* =========================
-   Floor container
-   ========================= */
+/* Floor card */
 .tp-floor {
   position: relative;
-  width: 900px;
-  height: 520px;
+  width: 980px;          /* visible and stable */
+  height: 560px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background:
-    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.06), transparent 40%),
-    radial-gradient(circle at 80% 40%, rgba(255, 255, 255, 0.05), transparent 45%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid #3a3a3a;
+  background: #111111;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65);
   overflow: hidden;
+  isolation: isolate;
 }
 
-/* Optional subtle grid overlay */
+/* Subtle grid UNDER everything */
 .tp-floor::after {
   content: "";
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
   background-size: 45px 45px;
-  opacity: 0.25;
+  opacity: 0.18;
   pointer-events: none;
+  z-index: 0;
 }
 
-/* Keep layers correct */
-.tp-area,
+/* Walls */
 .tp-wall {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
   z-index: 1;
 }
 
-.tp-table {
-  z-index: 3;
-}
+.tp-wall-top { left: 20px; top: 20px; width: 220px; height: 10px; }
+.tp-wall-bottom { right: 20px; bottom: 20px; width: 260px; height: 12px; }
+.tp-wall-left { left: 20px; top: 60px; width: 10px; height: 360px; }
+.tp-wall-right { right: 20px; top: 60px; width: 10px; height: 360px; }
 
-.tp-card {
-  z-index: 10;
-}
-
-/* =========================
-   Walls
-   ========================= */
-.tp-wall {
-  position: absolute;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-}
-
-.tp-wall-top {
-  left: 20px;
-  top: 20px;
-  width: 220px;
-  height: 10px;
-}
-
-.tp-wall-bottom {
-  right: 20px;
-  bottom: 20px;
-  width: 260px;
-  height: 12px;
-}
-
-.tp-wall-left {
-  left: 20px;
-  top: 60px;
-  width: 10px;
-  height: 360px;
-}
-
-.tp-wall-right {
-  right: 20px;
-  top: 60px;
-  width: 10px;
-  height: 360px;
-}
-
-/* =========================
-   Labeled areas (BAR/KITCHEN/ENTRANCE)
-   ========================= */
+/* Areas (BAR/KITCHEN/ENTRANCE) */
 .tp-area {
   position: absolute;
-  font-weight: 900;
+  z-index: 1;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 800;
   font-size: 12px;
-  letter-spacing: 1px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px dashed rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
-  opacity: 0.95;
-  color: rgba(255, 255, 255, 0.92);
+  border: 1px dashed rgba(220, 202, 135, 0.35);
+  background: rgba(220, 202, 135, 0.08);
+  color: rgba(220, 202, 135, 0.92);
 }
 
 .tp-bar {
@@ -205,68 +166,66 @@
   justify-content: center;
 }
 
-/* =========================
-   Tables
-   ========================= */
+/* Tables */
 .tp-table {
   position: absolute;
+  z-index: 3;
   display: grid;
   place-items: center;
-  font-weight: 900;
-  letter-spacing: 0.5px;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.06em;
   user-select: none;
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
-  color: white;
+  border: 1px solid #3a3a3a;
+  background: #151515;
+  color: #cccccc;
+  transition: transform 0.12s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.tp-rect {
-  border-radius: 14px;
-}
-
-.tp-circle {
-  border-radius: 999px;
-}
+.tp-rect { border-radius: 14px; }
+.tp-circle { border-radius: 999px; }
 
 .tp-table:hover,
 .tp-table:focus {
-  transform: scale(1.03);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+  border-color: #dcca87;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.55);
   outline: none;
 }
 
 /* Status styles */
 .tp-available {
-  border: 2px solid rgba(34, 197, 94, 1);
-  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(220, 202, 135, 0.45);
+  background: rgba(220, 202, 135, 0.16);
+  color: #dcca87;
 }
 
 .tp-reserved {
-  border: 2px solid rgba(239, 68, 68, 1);
-  background: rgba(239, 68, 68, 0.10);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: #333333;
+  color: #777777;
   cursor: not-allowed;
 }
 
 .tp-blocked {
-  border: 2px solid rgba(245, 158, 11, 1);
-  background: rgba(245, 158, 11, 0.12);
+  background: rgba(245, 158, 11, 0.14);
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #f59e0b;
 }
 
-/* =========================
-   Popup card (click-to-open)
-   ========================= */
+/* Popup card */
 .tp-card {
   position: absolute;
+  z-index: 10;
   width: 290px;
   padding: 14px;
-  border-radius: 16px;
-  background: #1f2933;
-  border: 2px solid rgba(255, 255, 255, 0.18);
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.08);
-  color: white;
-  pointer-events: auto;
+  border-radius: 12px;
+  background: #111111;
+  border: 1px solid #3a3a3a;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65);
+  color: #ffffff;
 }
 
 .tp-card-top {
@@ -277,13 +236,16 @@
 }
 
 .tp-card-title {
-  font-weight: 900;
-  font-size: 16px;
+  color: #dcca87;
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 700;
+  font-size: 18px;
 }
 
 .tp-card-sub {
+  font-family: "Open Sans", sans-serif;
   font-size: 13px;
-  opacity: 0.9;
+  color: #aaaaaa;
   margin-top: 2px;
 }
 
@@ -300,72 +262,71 @@
   font-size: 12px;
   padding: 6px 10px;
   border-radius: 999px;
-  font-weight: 900;
+  font-weight: 800;
   text-transform: capitalize;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid #333333;
+  background: #151515;
+  color: #cccccc;
   height: fit-content;
 }
-
-.tp-pill.available {
-  background: rgba(34, 197, 94, 0.18);
-  color: #22c55e;
-}
-
-.tp-pill.reserved {
-  background: rgba(239, 68, 68, 0.18);
-  color: #ef4444;
-}
-
-.tp-pill.blocked {
-  background: rgba(245, 158, 11, 0.18);
-  color: #f59e0b;
-}
+.tp-pill.available { color: #dcca87; border-color: rgba(220, 202, 135, 0.45); }
+.tp-pill.reserved  { color: #777777; }
+.tp-pill.blocked   { color: #f59e0b; }
 
 /* Reserve button */
 .tp-btn {
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(34, 197, 94, 0.2);
-  color: white;
-  font-weight: 900;
+  border-radius: 999px;
+  background: #dcca87;
+  color: #0b0b0b;
+  border: none;
+  padding: 10px 14px;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
   cursor: pointer;
-  white-space: nowrap;
-}
-
-.tp-btn:hover {
-  background: rgba(34, 197, 94, 0.28);
 }
 
 .tp-btn:disabled {
-  background: rgba(255, 255, 255, 0.07);
+  background: #222222;
+  color: #777777;
   cursor: not-allowed;
-  opacity: 0.85;
 }
 
-/* Red close button */
+/* Close button */
 .tp-close {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.6);
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.55);
   color: #ef4444;
-
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 10px;
-
   cursor: pointer;
   font-weight: 900;
-  font-size: 14px;
-  line-height: 1;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  transition: background 0.15s ease, transform 0.1s ease;
+  display: grid;
+  place-items: center;
 }
 
 .tp-close:hover {
-  background: rgba(239, 68, 68, 0.3);
-  transform: scale(1.05);
+  background: rgba(239, 68, 68, 0.22);
+}
+
+/* Datepicker input (if you still use it) */
+.tpDateInput {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 14px;
+  font-family: "Open Sans", sans-serif;
+}
+.tpDateInput::placeholder { color: #666666; }
+
+/* Responsive */
+@media (max-width: 1020px) {
+  .tp-floor { width: 92vw; height: 520px; }
+}
+@media (max-width: 900px) {
+  .tp-header h2 { font-size: 40px; }
 }
