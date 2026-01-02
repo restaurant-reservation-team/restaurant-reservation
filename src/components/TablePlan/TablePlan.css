@@ -1,6 +1,6 @@
 /* =========================
    TABLE PLAN (clean + same theme as login)
-   One definition per class (no duplicates)
+   Responsive: stage scaling (980x560 stays constant)
    ========================= */
 
 /* Page */
@@ -8,9 +8,10 @@
   width: 100%;
   min-height: calc(100vh - 80px);
   color: #ffffff;
-  padding: 3rem 1.25rem;
+  padding: clamp(16px, 3vw, 48px) clamp(12px, 3vw, 20px);
   display: flex;
   justify-content: center;
+  overflow-x: hidden;
 }
 
 .tp-shell {
@@ -26,7 +27,7 @@
 
 .tp-header h2 {
   font-family: "Cormorant Garamond", serif;
-  font-size: 52px;
+  font-size: clamp(32px, 6vw, 52px);
   line-height: 1.1;
   color: #dcca87;
   margin: 0 0 0.65rem 0;
@@ -72,23 +73,54 @@
 .tp-dot.reserved { background: #666666; }
 .tp-dot.blocked  { background: #f59e0b; }
 
-/* Floor wrapper (THIS is the container you said you can't see) */
+/* =========================
+   FLOOR: Responsive stage scaling
+   ========================= */
+
+/* Wrapper becomes the viewport/window */
 .tp-floorWrap {
+  width: 100%;
+  margin-top: 8px;
+
   display: flex;
   justify-content: center;
-  margin-top: 8px;
+  align-items: flex-start;
+
+  /* Desktop: no internal scrolling */
+  overflow: visible;
+  max-height: none;
+
+  padding: 10px 0;
 }
 
-/* Floor card */
+/* Stage is what gets scaled; floor stays 980x560 internally */
+/* Stage is scaled, floor stays 980x560 */
+.tp-floorStage {
+  width: 980px;
+  transform-origin: top center; /* IMPORTANT */
+}
+
+
+ @media (max-width: 1020px) {
+  .tp-floorWrap {
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    max-height: 75vh;
+  }
+}
+
+/* Floor card (keep fixed size for absolute x/y) */
 .tp-floor {
   position: relative;
-  width: 980px;          /* visible and stable */
+  width: 980px;
   height: 560px;
   border-radius: 16px;
   border: 1px solid #3a3a3a;
   background: #111111;
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65);
-  overflow: hidden;
+
+  overflow: visible;        /* Option B so card can overflow if needed */
   isolation: isolate;
 }
 
@@ -114,10 +146,10 @@
   z-index: 1;
 }
 
-.tp-wall-top { left: 20px; top: 20px; width: 220px; height: 10px; }
+.tp-wall-top    { left: 20px; top: 20px; width: 220px; height: 10px; }
 .tp-wall-bottom { right: 20px; bottom: 20px; width: 260px; height: 12px; }
-.tp-wall-left { left: 20px; top: 60px; width: 10px; height: 360px; }
-.tp-wall-right { right: 20px; top: 60px; width: 10px; height: 360px; }
+.tp-wall-left   { left: 20px; top: 60px; width: 10px; height: 360px; }
+.tp-wall-right  { right: 20px; top: 60px; width: 10px; height: 360px; }
 
 /* Areas (BAR/KITCHEN/ENTRANCE) */
 .tp-area {
@@ -226,6 +258,15 @@
   border: 1px solid #3a3a3a;
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65);
   color: #ffffff;
+
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 700px){
+  .tp-card{
+    width: min(92vw, 360px);
+  }
 }
 
 .tp-card-top {
@@ -269,6 +310,7 @@
   color: #cccccc;
   height: fit-content;
 }
+
 .tp-pill.available { color: #dcca87; border-color: rgba(220, 202, 135, 0.45); }
 .tp-pill.reserved  { color: #777777; }
 .tp-pill.blocked   { color: #f59e0b; }
@@ -311,7 +353,7 @@
   background: rgba(239, 68, 68, 0.22);
 }
 
-/* Datepicker input (if you still use it) */
+/* Datepicker input */
 .tpDateInput {
   width: 100%;
   background: transparent;
@@ -321,6 +363,7 @@
   font-size: 14px;
   font-family: "Open Sans", sans-serif;
 }
+
 .tpDateInput::placeholder { color: #666666; }
 
 .tpInput {
@@ -349,14 +392,3 @@
   resize: none;
   line-height: 1.35;
 }
-
-
-/* Responsive */
-@media (max-width: 1020px) {
-  .tp-floor { width: 92vw; height: 520px; }
-}
-@media (max-width: 900px) {
-  .tp-header h2 { font-size: 40px; }
-}
-
-

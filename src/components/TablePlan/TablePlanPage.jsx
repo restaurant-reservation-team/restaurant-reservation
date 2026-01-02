@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import "./TablePlan.css";
 
 import DatePicker from "react-datepicker";
@@ -19,11 +19,15 @@ export default function TablePlanPage() {
 
   const [availableTimes, setAvailableTimes] = useState([]);
 
-  // NEW: customer info
+  // customer info
   const [custName, setCustName] = useState("");
   const [custPhone, setCustPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [note, setNote] = useState("");
+
+  // ✅ responsive scale (measured, not guessed)
+  const floorWrapRef = useRef(null);
+  const [scale, setScale] = useState(1);
 
   /* ---------------- FETCH TABLES ---------------- */
   useEffect(() => {
@@ -38,8 +42,27 @@ export default function TablePlanPage() {
           }))
         );
       })
-
       .catch(console.error);
+  }, []);
+
+  /* ---------------- RESPONSIVE SCALE ---------------- */
+  useEffect(() => {
+    function recalc() {
+      const wrap = floorWrapRef.current;
+      if (!wrap) return;
+
+      // available width inside wrapper
+      const W = wrap.clientWidth;
+      const designW = 980;
+
+      // small safety so it never clips
+      const next = Math.min(1, (W - 16) / designW);
+      setScale(next);
+    }
+
+    recalc();
+    window.addEventListener("resize", recalc);
+    return () => window.removeEventListener("resize", recalc);
   }, []);
 
   /* ---------------- FETCH AVAILABLE TIMES ---------------- */
@@ -108,7 +131,6 @@ export default function TablePlanPage() {
 
     const name = custName.trim();
     const phone = custPhone.trim();
-    
 
     if (!name || !phone) {
       alert("Please enter your name and phone number.");
@@ -124,7 +146,7 @@ export default function TablePlanPage() {
         tableId: normalizeTableId(table.id),
         name,
         phone,
-        people, // party size (kept as 2 for now)
+        people,
         date,
         time,
         duration,
@@ -146,7 +168,6 @@ export default function TablePlanPage() {
     setCustPhone("");
     setNote("");
 
-
     // refresh availability
     fetch(
       `/api/availability?date=${encodeURIComponent(
@@ -160,11 +181,12 @@ export default function TablePlanPage() {
 
   function openPopupForTable(e, table) {
     e.stopPropagation();
-    const floor = e.currentTarget
-      .closest(".tp-floor")
-      ?.getBoundingClientRect();
+
+    const floor = e.currentTarget.closest(".tp-floor")?.getBoundingClientRect();
     if (!floor) return;
 
+    // clientX/Y are viewport coords; floor rect is also viewport coords.
+    // Even with transform scale, getBoundingClientRect matches what user sees.
     setPopupPos({ x: e.clientX - floor.left, y: e.clientY - floor.top });
     setSelectedId(table.id);
   }
@@ -302,7 +324,8 @@ export default function TablePlanPage() {
                       fontWeight: 700,
                       fontSize: 13,
                       cursor: "pointer",
-                      transition: "transform 120ms ease, border-color 200ms ease",
+                      transition:
+                        "transform 120ms ease, border-color 200ms ease",
                     }}
                   >
                     {t}
@@ -324,92 +347,95 @@ export default function TablePlanPage() {
         </div>
 
         {/* FLOOR */}
-        <div className="tp-floorWrap">
-          <div className="tp-floor" onClick={() => setSelectedId(null)}>
-            {/* AREAS */}
-            <div className="tp-wall tp-wall-top" />
-            <div className="tp-wall tp-wall-left" />
-            <div className="tp-wall tp-wall-right" />
-            <div className="tp-wall tp-wall-bottom" />
+        <div className="tp-floorWrap" ref={floorWrapRef}>
+          <div
+            className="tp-floorStage"
+            style={{ transform: `scale(${scale})` }}
+          >
+            <div className="tp-floor" onClick={() => setSelectedId(null)}>
+              {/* AREAS */}
+              <div className="tp-wall tp-wall-top" />
+              <div className="tp-wall tp-wall-left" />
+              <div className="tp-wall tp-wall-right" />
+              <div className="tp-wall tp-wall-bottom" />
 
-            <div className="tp-area tp-bar">BAR</div>
-            <div className="tp-area tp-kitchen">KITCHEN</div>
-            <div className="tp-area tp-entrance">ENTRANCE</div>
+              <div className="tp-area tp-bar">BAR</div>
+              <div className="tp-area tp-kitchen">KITCHEN</div>
+              <div className="tp-area tp-entrance">ENTRANCE</div>
 
-            {tablesWithStatus.map((t) => (
-              <div
-                key={t.id}
-                className={`tp-table tp-${t.shape} tp-${t.status}`}
-                style={tableStyle(t)}
-                onClick={(e) => openPopupForTable(e, t)}
-                tabIndex={0}
-              >
-                {t.id}
-              </div>
-            ))}
+              {tablesWithStatus.map((t) => (
+                <div
+                  key={t.id}
+                  className={`tp-table tp-${t.shape} tp-${t.status}`}
+                  style={tableStyle(t)}
+                  onClick={(e) => openPopupForTable(e, t)}
+                  tabIndex={0}
+                >
+                  {t.id}
+                </div>
+              ))}
 
-            {selected && (
-              <div
-                className="tp-card"
-                style={cardStyle(popupPos)}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="tp-card-top">
-                  <div>
-                    <div className="tp-card-title">{selected.name}</div>
-                    <div className="tp-card-sub">
-                      Seats: {selected.seats} • Zone: {selected.zone}
+              {selected && (
+                <div
+                  className="tp-card"
+                  style={cardStyle(popupPos)}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="tp-card-top">
+                    <div>
+                      <div className="tp-card-title">{selected.name}</div>
+                      <div className="tp-card-sub">
+                        Seats: {selected.seats} • Zone: {selected.zone}
+                      </div>
                     </div>
+                    <button
+                      className="tp-close"
+                      onClick={() => setSelectedId(null)}
+                    >
+                      ✕
+                    </button>
                   </div>
-                  <button
-                    className="tp-close"
-                    onClick={() => setSelectedId(null)}
-                  >
-                    ✕
-                  </button>
-                </div>
 
-                {/* NEW: form fields */}
-                <div style={{ marginTop: 10, display: "grid", gap: 10 }}>
-                  <input
-                    value={custName}
-                    onChange={(e) => setCustName(e.target.value)}
-                    placeholder="Your name"
-                    className="tpInput"
-                  />
-                  <input
-                    value={custPhone}
-                    onChange={(e) => setCustPhone(e.target.value)}
-                    placeholder="Phone number"
-                    className="tpInput"
-                  />
-                  <textarea
-                    value={note}
-                    onChange={(e) => setNote(e.target.value)}
-                    placeholder="Note (optional) – e.g. near window, birthday, no smoking..."
-                    className="tpInput tpTextarea"
-                  />
+                  <div style={{ marginTop: 10, display: "grid", gap: 10 }}>
+                    <input
+                      value={custName}
+                      onChange={(e) => setCustName(e.target.value)}
+                      placeholder="Your name"
+                      className="tpInput"
+                    />
+                    <input
+                      value={custPhone}
+                      onChange={(e) => setCustPhone(e.target.value)}
+                      placeholder="Phone number"
+                      className="tpInput"
+                    />
+                    <textarea
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}
+                      placeholder="Note (optional) – e.g. near window, birthday, no smoking..."
+                      className="tpInput tpTextarea"
+                    />
+                  </div>
 
-                </div>
-
-                <div className="tp-card-bottom">
-                  <span className={`tp-pill ${selected.status}`}>
-                    {selected.status}
-                  </span>
-                  <button
-                    className="tp-btn"
-                    disabled={selected.status !== "available" || submitting}
-                    onClick={() => handleReserve(selected)}
-                  >
-                    {submitting
-                      ? "Saving..."
-                      : selected.status === "available"
+                  <div className="tp-card-bottom">
+                    <span className={`tp-pill ${selected.status}`}>
+                      {selected.status}
+                    </span>
+                    <button
+                      className="tp-btn"
+                      disabled={selected.status !== "available" || submitting}
+                      onClick={() => handleReserve(selected)}
+                    >
+                      {submitting
+                        ? "Saving..."
+                        : selected.status === "available"
                         ? "Reserve"
                         : "Not available"}
-                  </button>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -447,11 +473,14 @@ function tableStyle(t) {
 
 function cardStyle(pos) {
   const cardW = 290;
-  const cardH = 210; // slightly taller now (inputs)
+  const cardH = 260;
+
+  const floorW = 980;
+  const floorH = 560;
 
   return {
-    left: Math.max(10, Math.min(pos.x + 14, 900 - cardW - 10)),
-    top: Math.max(10, Math.min(pos.y + 14, 520 - cardH - 10)),
+    left: Math.max(10, Math.min(pos.x + 14, floorW - cardW - 10)),
+    top: Math.max(10, Math.min(pos.y + 14, floorH - cardH - 10)),
   };
 }
 
@@ -463,9 +492,8 @@ function toYMD(d) {
 }
 
 function normalizeTableId(id) {
-  // handles 1, "1", "T1", "t12"
   const s = String(id).trim();
-  const numeric = s.replace(/^t/i, ""); // remove leading T/t
+  const numeric = s.replace(/^t/i, "");
   const n = parseInt(numeric, 10);
   return Number.isNaN(n) ? id : n;
 }
