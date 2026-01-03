@@ -1,47 +1,58 @@
-import React from 'react';
-
-
-import { images } from '../../constants'
-import { FiFacebook, FiInstagram } from 'react-icons/fi';
-import { FooterOverlay } from '../../components'
-import './Footer.css';
+import React from "react";
+import { FiFacebook, FiInstagram } from "react-icons/fi";
+import { images } from "../../constants";
 
 const Footer = () => (
-  <div className='app__footer section__padding'>
-    <FooterOverlay />
-    <div className='app__footer-links'>
-      <div className='app__footer-links_contact'>
-        <h1 className='app__footer-headtext'> CONTACT US</h1>
-        <p className='p__opensans'>71000 BiH</p>
-        <p className='p__opensans'>+12345</p>
-        <p className='p__opensans'>+12345</p>
+  <footer className="w-full bg-blackish text-whiteish flex flex-col items-center px-8 py-20">
+    
+    {/* Main footer content */}
+    <div className="w-full max-w-6xl flex justify-between items-start max-[1150px]:flex-col max-[1150px]:items-center">
+
+      {/* Contact */}
+      <div className="flex-1 text-center mb-8 max-[1150px]:mb-12">
+        <h1 className="app__footer-headtext mb-4">Contact Us</h1>
+        <p className="p__opensans">71000 BiH</p>
+        <p className="p__opensans">+12345</p>
+        <p className="p__opensans">+12345</p>
       </div>
 
-      <div className='app__footer-links_logo'>
-        <img src={images.gericht} alt="footer_logo" />
-        <p className='p__opensans'>The best restaurant in the city minimum city minimum best.</p>
-        <img src={images.spoon} alt="spoon" className='spoon__img' style={{ marginTop: 15 }} />
+      {/* Logo + text + social */}
+      <div className="flex-1 text-center mb-8 max-[1150px]:mb-12">
+        <img
+          src={images.gericht}
+          alt="footer logo"
+          className="w-[200px] mx-auto mb-4"
+        />
+
+        <p className="p__opensans max-w-md mx-auto mb-4">
+          The best restaurant in the city minimum city minimum best.
+        </p>
+
+        <div className="flex justify-center gap-4">
+          <FiFacebook className="text-[22px] cursor-pointer hover:text-golden transition-colors" />
+          <FiInstagram className="text-[22px] cursor-pointer hover:text-golden transition-colors" />
+        </div>
       </div>
 
-      <div className='app__footer-links_icons'>
-        <FiFacebook />
-        <FiInstagram />
-      </div>
-      <div className='app__footer-links_work'>
-        <h1 className='app__footer-headtext'> Working Hours</h1>
-        <p className='p__opensans'>Monday - Petak: 10.00 - 02.00</p>
-        <p className='p__opensans'>Saturday - Sunday: 10.00 - 02.00</p>
-        <p className='p__opensans'>+387 123 45 67 8910</p>
+      {/* Working hours */}
+      <div className="flex-1 text-center">
+        <h1 className="app__footer-headtext mb-4">Working Hours</h1>
+        <p className="p__opensans mb-2">Monday – Friday: 10.00 – 02.00</p>
+        <p className="p__opensans mb-2">Saturday – Sunday: 10.00 – 02.00</p>
+        <p className="p__opensans">+387 123 45 67 8910</p>
       </div>
 
-      
     </div>
 
+    {/* Divider */}
+    <div className="w-full max-w-6xl h-px bg-greyish/30 my-10" />
 
-    <div className='app__footer-copyright'>
-        <p className='p__opensans'>2025 Restaurant Copyright</p>
-      </div>
-  </div>
+    {/* Copyright */}
+    <p className="p__opensans text-sm opacity-80 text-center">
+      © 2025 Restaurant. All rights reserved.
+    </p>
+
+  </footer>
 );
 
 export default Footer;
