@@ -1,144 +1,209 @@
 .app__gallery {
-    display: flex;
-    flex-direction: row;
-    background: var(--color-black);
-    padding: 4rem 2rem;
+  display: flex;
+  flex-direction: row;
+  background: var(--color-black);
+  padding: 4rem 2rem;
 }
 
+/* CONTENT */
 .app__gallery-content {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    flex-direction: column;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
 
-    min-width: 500px;
-    padding-right: 2rem;
-    padding-left: 2rem;
+  min-width: 500px;
+  padding-right: 2rem;
+  padding-left: 2rem;
 }
 
 .app__gallery-content button {
-    margin-top: 2rem;
+  margin-top: 2rem;
 }
 
+/* IMAGES */
 .app__gallery-images {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    max-width: 50%;
-    position: relative;
-    
+  flex: 1;
+  display: flex;
+  flex-direction: column;     /* IMPORTANT so arrows can sit under/over cleanly */
+  max-width: 50%;
+  position: relative;
 }
 
 .app__gallery-images_container {
-    display: flex;
-    flex-direction: row;
-    width: max-content;
-    overflow-x: scroll;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  display: flex;
+  flex-direction: row;
+  width: max-content;
+  overflow-x: scroll;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .app__gallery-images_container::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .app__gallery-images_card {
-    position: relative;
-    min-width: 301px;
-    height: 447px;
-    margin-right: 2rem;
+  position: relative;
+  min-width: 301px;
+  height: 447px;
+  margin-right: 2rem;
 }
 
 .gallery__image-icon {
-    position: absolute;
-    color: #fff;
-
-    font-size: 2rem;
-    opacity: 0.5;
-    transition: .5s ease;
-    cursor: pointer;
+  position: absolute;
+  color: #fff;
+  font-size: 2rem;
+  opacity: 0.5;
+  transition: 0.5s ease;
+  cursor: pointer;
 }
 
 .app__gallery-images_card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 1;
-    transition: 0.5s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+  transition: 0.5s ease;
 }
 
 .app__gallery-images_card:hover img {
-    opacity: 0.35;
+  opacity: 0.35;
 }
 
 .app__gallery-images_card:hover .gallery__image-icon {
-    opacity: 1;
+  opacity: 1;
 }
 
+/* ARROWS (default desktop) */
 .app__gallery-images_arrows {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1.2rem; /* space between arrows */
-    margin-top: 15%; /* move arrows below */
-    position: relative; /* not absolute anymore */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.2rem;
+  margin-top: 15%;
+  position: relative;
 }
-
 
 .gallery__arrow-icon {
-    color: var(--color-golden);
-    font-size: 2rem;
-    cursor: pointer;
-    background-color: var(--color-black);
-    border-radius: 5px;
+  color: var(--color-golden);
+  font-size: 2rem;
+  cursor: pointer;
+  background-color: var(--color-black);
+  border-radius: 5px;
 }
 
 .gallery__arrow-icon:hover {
-    color: var(--color-white);
+  color: var(--color-white);
 }
 
+/* LARGE SCREENS */
 @media screen and (min-width: 2000px) {
-    .app__gallery-content {
-        min-width: 1000px;
-        padding-right: 4rem;
-    }
+  .app__gallery-content {
+    min-width: 1000px;
+    padding-right: 4rem;
+  }
 
-    .app__gallery-images_card {
-        min-width: 400px;
-        height: 550px;
-    }
+  .app__gallery-images_card {
+    min-width: 400px;
+    height: 550px;
+  }
 }
 
+/* TABLET */
 @media screen and (max-width: 1150px) {
-    .app__gallery {
-        flex-direction: column;
-    }
+  .app__gallery {
+    flex-direction: column;
+    align-items: center;
+  }
 
-    .app__gallery-images {
-        max-width: 100%;
-        margin: 5rem 0;
-    }
+  .app__gallery-content {
+    min-width: 100%;
+    max-width: 900px;
+  }
+
+  .app__gallery-images {
+    max-width: 100%;
+    width: 100%;
+    margin: 3rem 0 0;
+  }
 }
 
+/* SMALL TABLET */
 @media screen and (max-width: 850px) {
-    .app__gallery {
-        padding: 4rem 0 4rem 4rem;
-    }
+  .app__gallery {
+    padding: 3rem 1.5rem;
+  }
+
+  .app__gallery-content {
+    padding: 0;
+    text-align: center;
+    align-items: center;
+  }
+
+  .app__gallery-content p {
+    text-align: center;
+    max-width: 520px;
+  }
 }
 
+/* MOBILE (THIS IS THE MAIN FIX) */
 @media screen and (max-width: 650px) {
-    .app__gallery {
-        padding: 4rem 0 4rem 2rem;
-    }
+  .app__gallery {
+    padding: 2.5rem 1rem;
+  }
 
-    .app__gallery-content {
-        min-width: 100%;
-    }
+  .app__gallery-content {
+    min-width: 100%;
+    padding: 0;
+    text-align: center;
+    align-items: center;
+  }
 
-    .app__gallery-images_card {
-        min-width: 240px;
-        height: 320px;
-    }
+  .app__gallery-content p {
+    text-align: center;
+    margin-top: 1.5rem !important;
+    max-width: 320px;
+    line-height: 1.6;
+  }
+
+  .app__gallery-images {
+    max-width: 100%;
+    width: 100%;
+    margin-top: 2rem;
+  }
+
+  /* Make slider area fit the screen */
+  .app__gallery-images_container {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .app__gallery-images_card {
+    min-width: 85vw;     /* BIG improvement: use viewport width */
+    height: 320px;
+    margin-right: 1rem;
+  }
+
+  /* Put arrows OVER the image (looks way better on mobile) */
+  .app__gallery-images_arrows {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 12px;
+    margin-top: 0;
+    justify-content: space-between;
+    padding: 0 12px;
+    pointer-events: none; /* so user can scroll */
+  }
+
+  .gallery__arrow-icon {
+    pointer-events: auto; /* but arrows still clickable */
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 999px;
+    padding: 6px;
+  }
 }

@@ -1,84 +1,101 @@
-import React, { useState } from 'react';
-import { GiHamburgerMenu } from 'react-icons/gi';
-import { MdOutlineRestaurantMenu } from 'react-icons/md';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { MdOutlineRestaurantMenu } from "react-icons/md";
+import { Link } from "react-router-dom";
 
-import { images } from '../../constants/images';
-import './Navbar.css';
+import { images } from "../../constants/images";
 
 const Navbar = () => {
   const [toggleMenu, setToggleMenu] = useState(false);
 
+  const desktopLinks = [
+    ["Home", "/#home"],
+    ["About", "/#about"],
+    ["Menu", "/#menu"],
+    ["Gallery", "/#gallery"],
+    ["Contact", "/#contact"],
+  ];
+
+  const mobileLinks = [
+    ["Home", "/#home"],
+    ["About", "/#about"],
+    ["Menu", "/#menu"],
+    ["Contact", "/#contact"],
+    ["Log In / Registration", "/login"],
+  ];
+
   return (
-    <nav className='app__navbar'>
-      <div className='app__navbar-logo'>
-        <img src={images.gericht} alt='app logo' />
+    <nav className="w-full flex justify-between items-center bg-blackish px-8 py-4 max-[650px]:px-4">
+      {/* Logo */}
+      <div className="flex items-center justify-start">
+        <img
+          src={images.gericht}
+          alt="app logo"
+          className="w-[210px] max-[650px]:w-[110px]"
+        />
       </div>
 
-      {/* DESKTOP LINKOVI */}
-      <ul className='app__navbar-links'>
-        <li className='p__opensans'>
-          <Link to="/#home">Home</Link>
-        </li>
-        <li className='p__opensans'>
-          <Link to="/#about">About</Link>
-        </li>
-        <li className='p__opensans'>
-          <Link to="/#menu">Menu</Link>
-        </li>
-        <li className='p__opensans'>
-          <Link to="/#gallery">Gallery</Link>
-        </li>
-        <li className='p__opensans'>
-          <Link to="/#contact">Contact</Link>
-        </li>
+      {/* Desktop links */}
+      <ul className="flex-1 flex items-center justify-center list-none max-[1150px]:hidden">
+        {desktopLinks.map(([label, to]) => (
+          <li key={to} className="mx-4 cursor-pointer">
+            <Link
+              to={to}
+              className="p__opensans transition-all duration-300 hover:text-greyish hover:border-b hover:border-golden"
+            >
+              {label}
+            </Link>
+          </li>
+        ))}
       </ul>
 
-      <div className='app__navbar-login'>
-        {/* <Link to="/login" className='p__opensans'>
-          Log In / Registration
-        </Link> */}
-      
-        {/* Ako želiš da Book Table otvara /menu, možeš: <Link to="/menu">Book Table</Link> */}
-        <Link to="/table-plan" className='p__opensans'>
+      {/* Right side (desktop) */}
+      <div className="flex items-center justify-end max-[650px]:hidden">
+        <Link
+          to="/table-plan"
+          className="p__opensans mx-4 no-underline transition-all duration-500 hover:border-b hover:border-golden"
+        >
           Book Table
         </Link>
       </div>
 
-      {/* MOBILNI MENI */}
-      <div className='app__navbar-smallscreen'>
-        <GiHamburgerMenu
-          color='#fff'
-          fontSize={27}
+      {/* Mobile menu */}
+      <div className="hidden max-[1150px]:flex">
+        <button
+          type="button"
           onClick={() => setToggleMenu(true)}
-        />
+          aria-label="Open menu"
+          className="cursor-pointer"
+        >
+          <GiHamburgerMenu color="#fff" fontSize={27} />
+        </button>
 
         {toggleMenu && (
-          <div className='app__navbar-smallscreen_overlay flex__center slide-bottom'>
-            <MdOutlineRestaurantMenu
-              fontSize={27}
-              className='overlay__close'
+          <div className="fixed inset-0 z-[5] flex flex-col items-center justify-center bg-blackish transition-all duration-500 animate-slide-bottom">
+            <button
+              type="button"
               onClick={() => setToggleMenu(false)}
-            />
+              aria-label="Close menu"
+              className="absolute top-5 right-5 cursor-pointer"
+            >
+              <MdOutlineRestaurantMenu fontSize={27} className="text-golden" />
+            </button>
 
-            <ul className='app__navbar-smallscreen_links'>
-              <li className='p__opensans'>
-                <Link to="/#home" onClick={() => setToggleMenu(false)}>Home</Link>
-              </li>
-              <li className='p__opensans'>
-                <Link to="/#about" onClick={() => setToggleMenu(false)}>About</Link>
-              </li>
-              <li className='p__opensans'>
-                <Link to="/#menu" onClick={() => setToggleMenu(false)}>Menu</Link>
-              </li>
-              <li className='p__opensans'>
-                <Link to="/#contact" onClick={() => setToggleMenu(false)}>Contact</Link>
-              </li>
-              <li className='p__opensans'>
-                <Link to="/login" onClick={() => setToggleMenu(false)}>
-                  Log In / Registration
-                </Link>
-              </li>
+            <ul className="list-none">
+              {mobileLinks.map(([label, to]) => (
+                <li
+                  key={to}
+                  className="m-8 cursor-pointer text-golden text-[2rem] text-center font-base hover:text-whiteish"
+                >
+                  <Link
+                    to={to}
+                    onClick={() => setToggleMenu(false)}
+                    className="p__opensans"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         )}
